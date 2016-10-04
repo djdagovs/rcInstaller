@@ -108,8 +108,8 @@ server {
     error_log /var/log/nginx/rocketchat.access.log;
 
     ssl on;
-    ssl_certificate /etc/nginx/certificate.crt;
-    ssl_certificate_key /etc/nginx/certificate.key;
+    ssl_certificate /etc/letsencrypt/live/${rcURL}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${rcURL}/privkey.pem;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # don’t use SSLv3 ref: POODLE
 
     location / {
@@ -159,6 +159,9 @@ echo "1 1 1 * * /root/cert.sh" >> /etc/cron.d/rocket.chat
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 wait
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" >> /etc/apt/sources.list.d/mongodb-org-3.0.list
+wait
+apt-get update
+wait
 
 # Install Monogodb depends.
 apt-get install mongodb-org curl graphicsmagick -y
