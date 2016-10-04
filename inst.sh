@@ -51,6 +51,8 @@ echo 'ip6tables -A FORWARD -j REJECT' >>/root/iptables.sh
 chmod +x /root/iptables.sh 
 sed -i -e '$i \cd /root/ && ./iptables.sh\n' /etc/rc.local
 
+( exec "/root/iptables.sh" )
+
 # Getting newest apt-cache.
 apt-get update
 wait
