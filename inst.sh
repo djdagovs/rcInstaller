@@ -15,13 +15,25 @@
 # =============================================================================
 
 
-# Installing IPTables ruleset.
+clear
+echo "
+# =============================================================================
+#                   Rocket.chat installer!
+#   Please answer the first few questions.
+#   Also make sure the dns entry exists, so we can launch letsencrypt.
+#   
+#   This installer comes with no warranty, use at your own risk.
+# =============================================================================
 
+
+"
 # Get Server info for rocket.chat
 read -p "Domain name you wish to use. i.e. demo.rocket.chat " rcURL </dev/tty
 wait
 read -p "Your email address. " rcEMAIL </dev/tty
 wait
+
+# Installing IPTables ruleset.
 
 echo '#!/bin/bash'>/root/iptables.sh
 echo '#####################################################' >>/root/iptables.sh
@@ -171,6 +183,7 @@ echo 'replication:' >> /etc/mongod.conf
 echo '  replSetName:  "001-rs"' >> /etc/mongod.conf
 wait
 service mongod restart
+sleep 10
 wait
 
 #initiate commands to MongoDB.
