@@ -86,7 +86,10 @@ apt-get install nginx -y
 wait
 apt-get install git -y
 wait
-
+apt-get install lsb-release -y
+wait
+apt-get install htop -y
+wait
 
 # Let's do a quick upgrade.
 apt-get dist-upgrade -y
@@ -146,7 +149,7 @@ echo "
 rm -rf /opt/letsencrypt
 git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
 
-letsencrypt --renew-by-default -a webroot --webroot-path /var/www/html --email ${rcEMAIL} -d ${rcURL} auth
+/opt/letsencrypt/letsencrypt-auto --renew-by-default -a webroot --webroot-path /var/www/html --email ${rcEMAIL} -d ${rcURL} auth
 service nginx reload
 
 " >> /root/cert.sh
@@ -155,16 +158,11 @@ chmod +x cert.sh
 
 echo "1 1 1 * * /root/cert.sh" >> /etc/cron.d/rocket.chat
 
-# Let's add MongoDB Repo.
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-wait
-echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" >> /etc/apt/sources.list.d/mongodb-org-3.0.list
-wait
-apt-get update
-wait
 
 # Install Monogodb depends.
-apt-get install mongodb-org curl graphicsmagick -y
+apt-get install curl graphicsmagick -y
+wait
+apt-get install mongodb-server mongodb-clients mongodb -y
 wait
 
 # Install NodeJS and depends.
@@ -182,10 +180,10 @@ n 4.5
 wait
 
 # Configure MongoDB.
-echo 'replication:' >> /etc/mongod.conf
-echo '  replSetName:  "001-rs"' >> /etc/mongod.conf
+echo 'replication:' >> /etc/mongodb.conf
+echo '  replSetName:  "001-rs"' >> /etc/mongodb.conf
 wait
-service mongod restart
+service mongodb restart
 sleep 10
 wait
 
@@ -204,13 +202,14 @@ echo "#Export for rocket.chat -> MongoDB Database"  >> /home/rc/.profile
 echo "export MONGO_URL=mongodb://localhost:27017/rocketchat" >> /home/rc/.profile
 echo "#Rocket.chat port." >> /home/rc/.profile
 echo "export PORT=3000" >> /home/rc/.profile
-echo "Rocket.chat URL." >> /home/rc/.profile
+echo "#Rocket.chat URL." >> /home/rc/.profile
 echo "export ROOT_URL=https://${rcURL}/" >> /home/rc/.profile
 
 
 # Get Rocket.chat
 wget "https://rocket.chat/releases/latest/download" -O /tmp/rocket.chat.tgz
 wait
+cd /tmp
 tar zxvf rocket.chat.tgz
 wait
 mv bundle /opt/rocket.chat
