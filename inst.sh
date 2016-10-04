@@ -17,6 +17,12 @@
 
 # Installing IPTables ruleset.
 
+# Get Server info for rocket.chat
+read -p "Domain name you wish to use. i.e. demo.rocket.chat " rcURL
+wait
+read -p "Your email address. " rcEMAIL
+wait
+
 echo '#!/bin/bash'>/root/iptables.sh
 echo '#####################################################' >>/root/iptables.sh
 echo '#      IPv4'  >>/root/iptables.sh
@@ -45,10 +51,6 @@ echo 'ip6tables -A FORWARD -j REJECT' >>/root/iptables.sh
 chmod +x /root/iptables.sh 
 sed -i -e '$i \cd /root/ && ./iptables.sh\n' /etc/rc.local
 
-# Get Server info for rocket.chat
-read -p "Domain name you wish to use. i.e. demo.rocket.chat " rcURL
-wait
-
 # Getting newest apt-cache.
 apt-get update
 wait
@@ -68,11 +70,76 @@ apt-get install ca-certificates -y
 wait
 apt-get install nginx -y
 wait
+apt-get install git -y
+wait
 
 
 # Let's do a quick upgrade.
 apt-get dist-upgrade -y
 wait
+
+# Creating Nginx slug.
+echo "
+# Upstreams
+upstream backend {
+    server 127.0.0.1:3000;
+}
+
+# HTTPS Server
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
+    server_name ${rcURL};
+
+    error_log /var/log/nginx/rocketchat.access.log;
+
+    ssl on;
+    ssl_certificate /etc/nginx/certificate.crt;
+    ssl_certificate_key /etc/nginx/certificate.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # don’t use SSLv3 ref: POODLE
+
+    location / {
+        proxy_pass http://IP:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $http_host;
+
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forward-Proto http;
+        proxy_set_header X-Nginx-Proxy true;
+
+        proxy_redirect off;
+    }
+}" >> /etc/nginx/conf.d/rocket.chat.conf
+
+mv /var/www/html/index.html /var/www/html/index.html.old
+echo "
+<html>
+    <head>
+        <meta http-equiv='refresh' content=\"0;URL='https://${rcURL}'\" />  
+    </head>
+    <body>
+        <h1>Redirecting to https://</h1>
+    </body>
+</html>
+" >>/var/www/html/index.html
+
+# Build Cert.sh
+echo "
+#!/bin/bash
+rm -rf /opt/letsencrypt
+git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
+
+letsencrypt --renew-by-default -a webroot --webroot-path /var/www/html --email ${rcEMAIL} -d ${rcURL} auth
+service nginx reload
+
+" >> /root/cert.sh
+
+chmod +x cert.sh
+
+echo "1 1 1 * * /root/cert.sh" >> /etc/cron.d/rocket.chat
 
 # Let's add MongoDB Repo.
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
@@ -140,5 +207,4 @@ sed -i -e "$i \su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'\
 # Launch Rocket.chat.
 su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
 
-
-
+( exec "/root/cert.sh" )
