@@ -66,6 +66,9 @@ apt-get install vnstat -y
 wait
 apt-get install ca-certificates -y
 wait
+apt-get install nginx -y
+wait
+
 
 # Let's do a quick upgrade.
 apt-get dist-upgrade -y
