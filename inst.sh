@@ -18,9 +18,9 @@
 # Installing IPTables ruleset.
 
 # Get Server info for rocket.chat
-read -p "Domain name you wish to use. i.e. demo.rocket.chat " rcURL
+read -p "Domain name you wish to use. i.e. demo.rocket.chat " rcURL </dev/tty
 wait
-read -p "Your email address. " rcEMAIL
+read -p "Your email address. " rcEMAIL </dev/tty
 wait
 
 echo '#!/bin/bash'>/root/iptables.sh
