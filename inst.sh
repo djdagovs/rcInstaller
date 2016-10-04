@@ -69,6 +69,11 @@ sed -i -e '$i \cd /root/ && ./iptables.sh\n' /etc/rc.local
 apt-get update
 wait
 
+# Let's do a quick upgrade.
+apt-get dist-upgrade -y
+wait
+
+
 # Installing basic depends.
 apt-get install screen -y
 wait
@@ -89,10 +94,6 @@ wait
 apt-get install lsb-release -y
 wait
 apt-get install htop -y
-wait
-
-# Let's do a quick upgrade.
-apt-get dist-upgrade -y
 wait
 
 # Creating Nginx slug.
