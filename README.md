@@ -23,6 +23,11 @@ wget -qO- https://git.enjen.net/Munzy/rcInstaller/raw/master/inst.sh --no-check-
     
 # Tested Enviornements.
   - Ubuntu 16.04 64bit
+  
+
+# Useful Docs 
+
+https://rocket.chat/docs/
     
 
 # Coffee!
