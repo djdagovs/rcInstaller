@@ -117,14 +117,14 @@ server {
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # don’t use SSLv3 ref: POODLE
 
     location / {
-        proxy_pass http://IP:3000/;
+        proxy_pass http://localhost:3000/;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host $http_host;
+        proxy_set_header Host \$http_host;
 
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forward-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forward-Proto http;
         proxy_set_header X-Nginx-Proxy true;
 
@@ -193,7 +193,7 @@ mongo --eval "rs.initiate()"
 wait
 
 # create rocket.chat account (rc).
-adduser --disabled-password --gecos "Rocket.Chat, [server room], [127.0.0.1], [:::1]" rc
+adduser --disabled-password --gecos "Rocket.Chat, [server room]" rc
 wait
 
 # Push config options to export.
@@ -218,6 +218,7 @@ wait
 cd /opt/rocket.chat/programs/server
 npm install
 wait
+chown -R rc:rc /opt/rocket.chat
 
 # Install startup.
 sed -i -e "$i \su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'\n" /etc/rc.local
