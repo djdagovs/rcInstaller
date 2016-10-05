@@ -35,9 +35,36 @@ wget -qO- https://raw.githubusercontent.com/Munroenet/rcInstaller/master/inst.sh
   - Ubuntu 16.04 64bit
   
 
-# Useful Docs 
+# Useful Info
 
 https://rocket.chat/docs/
+
+You can quickly upgrade your rocket.chat server to the latest by sshing into 
+your server and running. It will also copy a backup of your current server to
+/opt/rocket.chat.backup if anything goes wrong. Please make sure to give it time
+after you run the updater as it will be updating the database and getting ready 
+to go again.
+```
+/root/rcUpdater.sh
+```
+
+Letsencrypt will automatically be renewed monthly by /root/cert.sh. You can 
+instantly get a new cert by running:
+```
+/root/cert.sh
+```
+
+This script installs a default firewall config, if you are running on a
+non-standard ssh port you should edit the config of the firewall with:
+```
+nano /root/iptables.sh
+```
+Once you are done changing the config, you can apply the new rules by running:
+```
+/root/iptables.sh
+```
+
+
 
 # Watch it in action!
 
