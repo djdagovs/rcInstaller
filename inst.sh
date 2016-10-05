@@ -202,7 +202,10 @@ tar zxvf rocket.chat.tgz
 wait
 cp -r bundle/* /opt/rocket.chat/
 wait
+chown -R rc:rc /opt/rocket.chat
+wait
 sleep 10
+wait
 su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
 echo '
 
