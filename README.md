@@ -10,7 +10,7 @@ Copy and paste this into an Ubuntu server of your choice. Press enter, answer a
 few questions and it will take care of the rest for you.
 
 ```
-wget -qO- https://git.enjen.net/Munzy/rcInstaller/raw/master/inst.sh --no-check-certificate | bash
+wget -qO- https://raw.githubusercontent.com/Munroenet/rcInstaller/master/inst.sh --no-check-certificate | bash
 ```
 
 # Requirements
