@@ -42,6 +42,14 @@ https://rocket.chat/docs/
 # Watch it in action!
 
 ![Watch it in action!](https://www.cameronmunroe.com/u/2016-10-05_10-46-49.gif)
+
+
+# Hosts
+You are a service provider, and you are curious if you can use this script in a
+preconfigured package to quickly get users up and running on rocket.chat. The 
+answer is yes, you may use this script for a preconfigured package and we gladly
+encourage it. We ask that you leave the coffee links, but we won't be too upset
+if you remove them. 
     
 
 # Coffee!
