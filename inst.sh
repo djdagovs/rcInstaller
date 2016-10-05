@@ -89,7 +89,7 @@ echo 'ip6tables -A INPUT -j REJECT' >>/root/iptables.sh
 echo 'ip6tables -A FORWARD -j REJECT' >>/root/iptables.sh
 
 chmod +x /root/iptables.sh 
-sed -i -e '$i \cd /root/iptables.sh\n' /etc/rc.local
+sed -i -e '$i \/root/iptables.sh\n' /etc/rc.local
 
 ( exec "/root/iptables.sh" )
 
