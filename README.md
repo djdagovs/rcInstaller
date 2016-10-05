@@ -1,11 +1,13 @@
 # rcInstaller
 
 rcInstaller is a quick installer for rocket.chat that will do the work for you.
+It will get you up and running with a rocket.chat server in about 6 minutes.
 So you can spend your valuable time doing something else. It is currently built
 to run and install on Ubuntu linux. 
 
-rcInstaller will install rocket.chat, nginx, letsencrypt. After doing such, it
-will configure nginx to act as a proxy with a free SSL cert from letsencrypt.
+rcInstaller will install rocket.chat, nginx, letsencrypt, and configure a
+firewall for server. After doing such, it will configure nginx to act as a proxy
+with a free SSL cert from letsencrypt.
 
 # Install it now!
 
