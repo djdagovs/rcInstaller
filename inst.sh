@@ -47,12 +47,17 @@ clear
 echo "
 # =============================================================================
 #                   Rocket.chat installer!
+# =============================================================================
 #   Please answer the first few questions.
-#   Also make sure the dns entry exists, so we can launch letsencrypt.
+#   The domain name you specify should be valid, and pointing at this server.
+#   It will be used by letsencrypt and the configuration of your server.
 #   
 #   This installer comes with no warranty, use at your own risk.
+#
+#   Also, please make sure to not install this on an already in use server.
+#   Consequences may occur from running this script if you do.
+#
 # =============================================================================
-
 
 "
 # Get Server info for rocket.chat
