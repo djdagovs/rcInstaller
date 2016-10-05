@@ -21,7 +21,8 @@ wget -qO- https://git.enjen.net/Munzy/rcInstaller/raw/master/inst.sh --no-check-
   - 64bit OS
   - https://rocket.chat/docs/installation/minimum-requirements
     
-# Tested Enviornements.
+
+# Tested Enviornements
   - Ubuntu 16.04 64bit
   
 
