@@ -41,7 +41,7 @@ https://rocket.chat/docs/
 
 # Watch it in action!
 
-![Watch it in action!](https://www.cameronmunroe.com/u/2016-10-05_10-46-49.gif)
+[Watch it in action!](https://www.cameronmunroe.com/u/2016-10-05_10-46-49.gif)
 
 
 # Hosts
