@@ -3,15 +3,43 @@
 # =============================================================================
 #               Rocket.Chat installer for (Ubunutu)
 # =============================================================================
+#
 #   By:     Cameron Munroe ~ Mun
-#   Ver:    0.0
+#   Ver:    1.0
 #   
 #
 #
+#        If you enjoyed our work, please send us some coffee at
+#            https://www.cameronmunroe.com/coffee/
 #
-#
-#
-#
+# =============================================================================
+
+
+
+
+# =============================================================================
+# 	    rcInstaller License
+# =============================================================================
+
+    # rcInstaller : A quick installer for rocket.chat
+    # Copyright (C) {2016}  {Cameron Munroe ~ Mun }
+	# munroenet@gmail.com 
+
+    # This program is free software: you can redistribute it and/or modify
+    # it under the terms of the GNU General Public License as published by
+    # the Free Software Foundation, either version 3 of the License, or
+    # (at your option) any later version.
+
+    # This program is distributed in the hope that it will be useful,
+    # but WITHOUT ANY WARRANTY; without even the implied warranty of
+    # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    # GNU General Public License for more details.
+
+    # You should have received a copy of the GNU General Public License
+    # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# =============================================================================
+# 		End rcInsaller License
 # =============================================================================
 
 
@@ -61,7 +89,7 @@ echo 'ip6tables -A INPUT -j REJECT' >>/root/iptables.sh
 echo 'ip6tables -A FORWARD -j REJECT' >>/root/iptables.sh
 
 chmod +x /root/iptables.sh 
-sed -i -e '$i \cd /root/ && ./iptables.sh\n' /etc/rc.local
+sed -i -e '$i \cd /root/iptables.sh\n' /etc/rc.local
 
 ( exec "/root/iptables.sh" )
 
@@ -144,6 +172,51 @@ echo "
 </html>
 " >>/var/www/html/index.html
 
+# Build updater.sh
+echo "
+#!/bin/bash
+
+echo '
+
+# =============================================================================
+                            Updating Rocket.chat
+
+            Rocket.chat will be shutdown, backed up, and restarted.
+            Please give us a few moments to accomplish this.
+            
+# =============================================================================
+'
+killall -u rc
+sleep 10
+cp -r /opt/rocket.chat /opt/rocket.chat.backup
+wait
+wget 'https://rocket.chat/releases/latest/download' -O /tmp/rocket.chat.tgz
+wait
+cd /tmp
+tar zxvf rocket.chat.tgz
+wait
+cp -r bundle/* /opt/rocket.chat/
+wait
+sleep 10
+su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
+echo '
+
+# =============================================================================
+                                Congrats!
+
+        Rocket.chat should be updated, and starting up now.
+        
+        Please give us a few minutes for the server to fully update
+        and get running though!
+            
+        If you enjoyed our work, please send us some coffee at
+        https://www.cameronmunroe.com/coffee/
+
+# =============================================================================
+'
+" >>/root/rcUpdater.sh
+chmod +x /root/rcUpdater.sh
+
 # Build Cert.sh
 echo "
 #!/bin/bash
@@ -180,25 +253,12 @@ wait
 n 4.5
 wait
 
-# Configure MongoDB.
-echo 'replication:' >> /etc/mongodb.conf
-echo '  replSetName:  "001-rs"' >> /etc/mongodb.conf
-wait
-service mongodb restart
-sleep 10
-wait
-
-#initiate commands to MongoDB.
-mongo --eval "rs.initiate()"
-wait
 
 # create rocket.chat account (rc).
 adduser --disabled-password --gecos "Rocket.Chat, [server room]" rc
 wait
 
 # Push config options to export.
-echo "#Export for rocket.chat -> MongoDB Oplog." >> /home/rc/.profile
-echo "export MONGO_OPLOG_URL=mongodb://localhost:27017/local?replicaSet=001-rs" >> /home/rc/.profile
 echo "#Export for rocket.chat -> MongoDB Database"  >> /home/rc/.profile
 echo "export MONGO_URL=mongodb://localhost:27017/rocketchat" >> /home/rc/.profile
 echo "#Rocket.chat port." >> /home/rc/.profile
@@ -221,9 +281,24 @@ wait
 chown -R rc:rc /opt/rocket.chat
 
 # Install startup.
-sed -i -e "$i \su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'\n" /etc/rc.local
+sed -i -e '$i \su -l - rc -c "cd /opt/rocket.chat && screen -d -m node main.js"\n' /etc/rc.local
 
 # Launch Rocket.chat.
 su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
 
 ( exec "/root/cert.sh" )
+
+echo "
+
+
+# =============================================================================
+                                Congrats!
+                                
+        Your new rocket.chat server should be running at
+            https://${rcURL}/
+        
+        If you enjoyed our work, please send us some coffee at
+            https://www.cameronmunroe.com/coffee/
+
+# =============================================================================
+"
