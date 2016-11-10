@@ -126,6 +126,8 @@ apt-get install lsb-release -y
 wait
 apt-get install htop -y
 wait
+apt-get install psmisc -y
+wait
 
 # Creating Nginx slug.
 echo "
