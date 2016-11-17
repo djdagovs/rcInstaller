@@ -236,7 +236,7 @@ service nginx reload
 
 " >> /root/cert.sh
 
-chmod +x cert.sh
+chmod +x /root/cert.sh
 
 echo "1 1 1 * * /root/cert.sh" >> /etc/cron.d/rocket.chat
 
