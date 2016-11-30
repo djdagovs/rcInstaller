@@ -138,8 +138,14 @@ upstream backend {
 
 # HTTPS Server
 server {
-    listen 443 ssl http2 default_server;
-    listen [::]:443 ssl http2 default_server;
+
+    # Enable HTTP2 by commenting out the other listen section, and uncommenting
+    # this section.
+    #listen 443 ssl http2 default_server;
+    #listen [::]:443 ssl http2 default_server;
+
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
     server_name ${rcURL};
 
     error_log /var/log/nginx/rocketchat.access.log;
