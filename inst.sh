@@ -5,7 +5,7 @@
 # =============================================================================
 #
 #   By:     Cameron Munroe ~ Mun
-#   Ver:    1.0
+#   Ver:    1.1
 #   git:    https://github.com/Munroenet/rcInstaller
 #
 #
@@ -22,7 +22,7 @@
 # =============================================================================
 
     # rcInstaller : A quick installer for rocket.chat
-    # Copyright (C) {2016}  {Cameron Munroe ~ Mun }
+    # Copyright (C) {2017}  {Cameron Munroe ~ Mun }
 	# munroenet@gmail.com 
 
     # This program is free software: you can redistribute it and/or modify
@@ -92,7 +92,6 @@ echo 'ip6tables -A INPUT -j REJECT' >>/root/iptables.sh
 echo 'ip6tables -A FORWARD -j REJECT' >>/root/iptables.sh
 
 chmod +x /root/iptables.sh 
-sed -i -e '$i \/root/iptables.sh\n' /etc/rc.local
 
 ( exec "/root/iptables.sh" )
 
@@ -237,15 +236,36 @@ echo "
 rm -rf /opt/letsencrypt
 git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
 
-/opt/letsencrypt/letsencrypt-auto --renew-by-default -a webroot --webroot-path /var/www/html --email ${rcEMAIL} -d ${rcURL} auth
-service nginx reload
+/opt/letsencrypt/letsencrypt-auto --renew-by-default -a webroot --webroot-path /var/www/html --email ${rcEMAIL} -d ${rcURL} auth --agree-tos --agree-dev-preview
+/etc/init.d/nginx reload
 
 " >> /root/cert.sh
 
 chmod +x /root/cert.sh
 
-echo "1 1 1 * * /root/cert.sh" >> /etc/cron.d/rocket.chat
+echo "#!/bin/bash
+su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
 
+" >> /root/runRC.sh
+
+chmod +x /root/runRC.sh
+
+echo '
+################################################################################
+#           Firewall
+################################################################################
+
+@reboot         root    /root/iptables.sh
+
+################################################################################
+#           Rocket.Chat
+################################################################################
+
+@reboot         root    sleep 60 && /root/runRC.sh &
+1 1     1 * *   root    /root/cert.sh
+
+
+' >> /etc/crontab
 
 # Install Monogodb depends.
 apt-get install curl graphicsmagick -y
@@ -264,7 +284,7 @@ wait
 # Change NodeJS version
 npm install -g n
 wait
-n 4.5
+n 4.7.3
 wait
 
 
@@ -294,13 +314,14 @@ npm install
 wait
 chown -R rc:rc /opt/rocket.chat
 
-# Install startup.
-sed -i -e '$i \su -l - rc -c "cd /opt/rocket.chat && screen -d -m node main.js"\n' /etc/rc.local
 
 # Launch Rocket.chat.
-su -l - rc -c 'cd /opt/rocket.chat && screen -d -m node main.js'
+( exec "/root/runRC.sh" )
 
+# Create Cert
 ( exec "/root/cert.sh" )
+wait
+
 
 echo "
 
@@ -316,3 +337,4 @@ echo "
 
 # =============================================================================
 "
+

@@ -33,6 +33,7 @@ wget -qO- https://raw.githubusercontent.com/Munroenet/rcInstaller/master/inst.sh
 
 # Tested Enviornements
   - Ubuntu 16.04 64bit
+  - Ubuntu 17.04 64bit
   
 
 # Useful Info
@@ -63,6 +64,12 @@ Once you are done changing the config, you can apply the new rules by running:
 ```
 /root/iptables.sh
 ```
+Command that will start the rocket.chat server backend. This is done
+automatically with crontab in newer releases. It will take 60 seconds after boot
+to start up the server however. 
+```
+/root/runRC.sh
+```
 
 
 
@@ -87,7 +94,7 @@ https://www.cameronmunroe.com/coffee
 # License
 
     # rcInstaller : A quick installer for rocket.chat
-    # Copyright (C) {2016}  {Cameron Munroe ~ Mun }
+    # Copyright (C) {2017}  {Cameron Munroe ~ Mun }
 	# munroenet@gmail.com 
 
     # This program is free software: you can redistribute it and/or modify
