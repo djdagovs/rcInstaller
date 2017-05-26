@@ -6,7 +6,7 @@
 #
 #   By:     Cameron Munroe ~ Mun
 #   Ver:    1.1
-#   git:    https://github.com/Munroenet/rcInstaller
+#   git:    https://github.com/Munzy/rcInstaller
 #
 #
 #        If you enjoyed our work, please send us some coffee at

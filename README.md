@@ -19,7 +19,7 @@ make sure the dns address you specify is valid as letsencrypt will be used to
 generate you a free SSL cert.
 
 ```
-wget -qO- https://raw.githubusercontent.com/Munroenet/rcInstaller/master/inst.sh --no-check-certificate | bash
+wget -qO- https://raw.githubusercontent.com/Munzy/rcInstaller/master/inst.sh --no-check-certificate | bash
 ```
 
 # Requirements
